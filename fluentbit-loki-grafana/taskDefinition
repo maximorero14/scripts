@@ -1,0 +1,95 @@
+{
+    "family": "takDefinitionv3",
+    "containerDefinitions": [
+        {
+            "name": "maxiappv3",
+            "image": "847625635115.dkr.ecr.us-east-1.amazonaws.com/maxiapp",
+            "cpu": 0,
+            "portMappings": [
+                {
+                    "name": "maxiappv3-8080-tcp",
+                    "containerPort": 8080,
+                    "hostPort": 8080,
+                    "protocol": "tcp",
+                    "appProtocol": "http"
+                }
+            ],
+            "essential": true,
+            "environment": [
+                {
+                    "name": "SERVER_PORT",
+                    "value": "8080"
+                }
+            ],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "logConfiguration": {
+                "logDriver": "awsfirelens"
+            }
+        },
+        {
+            "name": "log_routerv3",
+            "image": "847625635115.dkr.ecr.us-east-1.amazonaws.com/fluentbit",
+            "cpu": 0,
+            "portMappings": [],
+            "essential": false,
+            "environment": [
+                {
+                    "name": "LOKI_HOST",
+                    "value": "54.162.255.166"
+                },
+                {
+                    "name": "FLB_LOG_LEVEL",
+                    "value": "info"
+                },
+                {
+                    "name": "SVC_VERSION",
+                    "value": "2.0"
+                },
+                {
+                    "name": "LOKI_PORT",
+                    "value": "80"
+                },
+                {
+                    "name": "ENV",
+                    "value": "dev"
+                },
+                {
+                    "name": "SVC_NAME",
+                    "value": "ecs-loki-demo"
+                }
+            ],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "user": "0",
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "ecs-loki-demo",
+                    "awslogs-region": "us-east-1",
+                    "awslogs-stream-prefix": "firelens"
+                }
+            },
+            "firelensConfiguration": {
+                "type": "fluentbit",
+                "options": {
+                    "config-file-type": "file",
+                    "config-file-value": "/fluent-bit/etc/fluent-bit-filter.conf",
+                    "enable-ecs-log-metadata": "true"
+                }
+            }
+        }
+    ],
+    "taskRoleArn": "arn:aws:iam::847625635115:role/ecsTaskExecutionRole",
+    "executionRoleArn": "arn:aws:iam::847625635115:role/ecsTaskExecutionRole",
+    "networkMode": "awsvpc",
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "1024",
+    "memory": "3072",
+    "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+    }
+}

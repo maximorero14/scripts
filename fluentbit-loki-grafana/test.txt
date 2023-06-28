@@ -1,0 +1,91 @@
+sudo yum update -y 
+
+sudo yum install docker 
+
+sudo service docker start 
+
+sudo usermod -a -G docker ec2-user 
+
+sudo yum update && sudo yum install -y libxcrypt-compat
+
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+sudo chmod +x /usr/local/bin/docker-compose
+
+
+sudo docker-compose up --build
+
+docker build --platform linux/amd64 -t logstest .
+
+
+curl -kL 54.227.105.230/test-my-loki-integration
+
+
+ {
+    "name": "application",
+    "essential": true,
+    "image": "kvendingoldo/echo-http-server:2.0",
+    "portMappings": [
+      {
+        "containerPort": 8080,
+        "hostPort": 8080,
+        "protocol": "tcp"
+      }
+    ],
+    "environment": [
+      {
+        "name": "SERVER_PORT",
+        "value": "8080"
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awsfirelens"
+    }
+  },
+  {
+    "name": "log_router",
+    "essential": false,
+    "image": "kvendingoldo/fluentbit",
+    "firelensConfiguration": {
+      "type": "fluentbit",
+      "options": {
+        "enable-ecs-log-metadata": "true",
+        "config-file-type": "file",
+        "config-file-value": "/fluent-bit/etc/fluent-bit-filter.conf"
+      }
+    },
+    "environment": [
+      {
+        "name": "FLB_LOG_LEVEL",
+        "value": "info"
+      },
+      {
+        "name": "LOKI_HOST",
+        "value": "loki.infra.referrs.me"
+      },
+      {
+        "name": "LOKI_PORT",
+        "value": "80"
+      },
+      {
+        "name": "SVC_NAME",
+        "value": "ecs-loki-demo"
+      },
+      {
+        "name": "SVC_VERSION",
+        "value": "2.0"
+      },
+      {
+        "name": "ENV",
+        "value": "dev"
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "ecs-loki-demo",
+        "awslogs-region": "us-east-1",
+        "awslogs-stream-prefix": "firelens"
+      }
+    }
+  }

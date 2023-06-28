@@ -1,0 +1,40 @@
+{
+  "Type" : "Notification",
+  "MessageId" : "b7b25d2a-d4bc-53e8-bf6e-003877765681",
+  "TopicArn" : "arn:aws:sns:us-east-1:693613560166:account-balance-completed-stage",
+  "Message" : "{\"internalId\":\"514bbe13-a145-4e2a-bd02-680fc2473023\",\"transactionType\":\"PayOut\",\"accountingDate\":\"2023-06-25T20:20:26.32647\",\"client\":[{\"entityType\":0,\"entityCode\":\"0062\",\"accountNumber\":\"484.840.00000010\",\"paymentCurrency\":\"MXN\",\"paymentAmount\":14.02,\"fxQuote\":1,\"confirmedCurrency\":\"USD\",\"confirmedAmount\":0.74,\"feesCurrency\":\"USD\",\"feesAmount\":1.5,\"localTaxesCurrency\":\"MXN\",\"localTaxesAmount\":0,\"withholdingsCurrency\":\"MXN\",\"withholdingsAmount\":0,\"accountCurrency\":\"USD\",\"accountAmount\":-2.24,\"closingBalance\":null}],\"provider\":[{\"entityType\":1,\"entityCode\":\"0018\",\"accountNumber\":\"116091237\",\"paymentCurrency\":\"MXN\",\"paymentAmount\":14.02,\"fxQuote\":1,\"confirmedCurrency\":\"MXN\",\"confirmedAmount\":14.02,\"feesCurrency\":\"MXN\",\"feesAmount\":0.07,\"localTaxesCurrency\":\"MXN\",\"localTaxesAmount\":0,\"withholdingsCurrency\":\"MXN\",\"withholdingsAmount\":0,\"accountCurrency\":\"MXN\",\"accountAmount\":-14.09,\"closingBalance\":null}]}",
+  "Timestamp" : "2023-06-25T20:20:26.413Z",
+  "SignatureVersion" : "1",
+  "Signature" : "NegETs2h8HvRl1I8RYU5fFmslLWMdiC6GxQ4wCWsg7v0UbteXMxDap/Y/8MPJLd9GXD/wdCD48Sw+l8VYdpmmFJh6Hg1hmlBaDnb/wo+fo9RuYuXxk+uQScTe/WUQcza6UPJuZn0c0unZUZSi24XTqEV2aaUGSbvcHqyPfyIWNu+63QZLxou4hxq2cc1UdNtnbWw0TJR1nnPueZ5oUHdQXEJYi3NvOdnxIGRQbKP21usKLjPNvYKWEK4IhXuBU7DUBxmsC9+R2sc68aDwybTG94NoFmjQT+uDK+f5GFJ17pJt5gRh0ysf2OvPDnVVAypZhKGKBwWY9KHb8dRxfR8Mg==",
+  "SigningCertURL" : "https://sns.us-east-1.amazonaws.com/SimpleNotificationService-01d088a6f77103d0fe307c0069e40ed6.pem",
+  "UnsubscribeURL" : "https://sns.us-east-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-east-1:693613560166:account-balance-completed-stage:df43be44-8d23-4925-a5ca-0c2acccfd5e1"
+}
+
+
+{   "aws": {     "sqs": {       "endpoint": "http://localhost:4566/000000000000/",       "reporting-transactionlog-received": {         "queueName": "http://localhost:4566/000000000000/reporting-transactionlog-received-dev",         "scheduled_time": 10000       },       "reporting-transactionlog-updated": {         "queueName": "http://localhost:4566/000000000000/reporting-transactionlog-updated-dev",         "scheduled_time": 10000       },       "reporting-account-balance-completed": {         "queueName": "http://localhost:4566/000000000000/reporting-account-balance-completed-dev",         "scheduled_time": 10000       }     }   } }
+
+
+
+
+aws sqs create-queue --queue-name reporting-transactionlog-received-dev --endpoint-url=http://localhost:4566
+aws sqs create-queue --queue-name reporting-transactionlog-updated-dev --endpoint-url=http://localhost:4566
+aws sqs create-queue --queue-name reporting-account-balance-completed-dev --endpoint-url=http://localhost:4566
+
+
+
+
+aws sqs send-message --queue-url http://localhost:4566/000000000000/reporting-account-balance-completed-dev --message-body='{
+  "Type" : "Notification",
+  "MessageId" : "c5da6faa-089d-542e-8a0d-32b855773a85",
+  "TopicArn" : "arn:aws:sns:us-east-1:693613560166:account-balance-completed-dev",
+  "Message" : "{\"internalId\":\"5dd877e7-385f-4a00-be25-0a269a60d34e\",\"transactionType\":\"PayOut\",\"accountingDate\":\"2023-06-25T15:22:17.37248\",\"client\":[{\"entityType\":0,\"entityCode\":\"0005\",\"accountNumber\":\"170.170.00000005\",\"paymentCurrency\":\"COP\",\"paymentAmount\":5.5E+7,\"fxQuote\":4545.95,\"confirmedCurrency\":\"COP\",\"confirmedAmount\":5.5E+7,\"feesCurrency\":\"COP\",\"feesAmount\":275025,\"localTaxesCurrency\":\"COP\",\"localTaxesAmount\":0,\"withholdingsCurrency\":\"COP\",\"withholdingsAmount\":0,\"accountCurrency\":\"COP\",\"accountAmount\":-55275025,\"closingBalance\":null}],\"provider\":[{\"entityType\":1,\"entityCode\":\"0154\",\"accountNumber\":\"BCOLOMBIA\",\"paymentCurrency\":\"COP\",\"paymentAmount\":5.5E+7,\"fxQuote\":4545.95,\"confirmedCurrency\":\"COP\",\"confirmedAmount\":5.5E+7,\"feesCurrency\":\"COP\",\"feesAmount\":275025,\"localTaxesCurrency\":\"COP\",\"localTaxesAmount\":0,\"withholdingsCurrency\":\"COP\",\"withholdingsAmount\":0,\"accountCurrency\":\"COP\",\"accountAmount\":-55275025,\"closingBalance\":null}]}",
+  "Timestamp" : "2023-06-25T15:22:18.427Z",
+  "SignatureVersion" : "1",
+  "Signature" : "iiOoYd52joZf0Aw8o1w03zk1P87LXROMJmnNgQ/jTh7jR12PBfO7Z2aV+LDpHbG4Fe8hF958vQh9uL0m9+adzdsSnyWT2G2Xc+7atxrrYAy7Ykn+1s4RBm7K0SBNX7E2GB3riVSfZQCgsBkvXoMhNwCaWb4z8e4D3of4PfX36fVtSPmkR3OROtMRwsf+9+DPyKTI1ieSeTv5zVgQ1cBIAlnp9+ZSGTlOkDOOIXWq4YTX1yku4epDaRb/wD0LR9EMpk6FVGiVMdOMPgdCrdYK10u28YmUJdu5Gfz9JVUlg3kjVvCDs+BTgNfcRbKNn1KjoYdzCOW20imXyVeV34ElsQ==",
+  "SigningCertURL" : "https://sns.us-east-1.amazonaws.com/SimpleNotificationService-01d088a6f77103d0fe307c0069e40ed6.pem",
+  "UnsubscribeURL" : "https://sns.us-east-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-east-1:693613560166:account-balance-completed-dev:9aa44afd-43f3-4ab7-9b7e-0155c34e2e38"
+}' --endpoint-url=http://localhost:4566
+
+
+
+aws ecr get-login-password --profile tmp --region us-east-1 | docker login --username AWS --password-stdin 763335115465.dkr.ecr.us-east-1.amazonaws.com

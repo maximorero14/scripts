@@ -1,0 +1,38 @@
+#!/bin/bash
+
+sudo yum update -y 
+
+sudo yum install -y docker 
+
+sudo systemctl start docker
+
+sudo usermod -a -G docker ec2-user 
+
+sudo yum update -y && sudo yum install -y libxcrypt-compat
+
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+sudo chmod +x /usr/local/bin/docker-compose
+
+# Crear el archivo docker-compose.yml
+cat << EOF > docker-compose.yml
+version: "3.9"
+
+services:
+  grafana:
+    image: "grafana/grafana:latest"
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./provisioning:/etc/grafana/provisioning
+
+  loki:
+    image: "grafana/loki:latest"
+    ports:
+      - "80:3100"
+
+volumes:
+  logs_dir:
+EOF
+
+sudo docker-compose up --build
